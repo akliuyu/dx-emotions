@@ -1,0 +1,33 @@
+{
+    "manifest_version": 2,
+    "name": "大象表情收藏",
+    "description": "大象表情收藏",
+    "version": "4.0.2",
+    "default_locale": "zh_CN",
+    "icons": {
+        "16": "img/icon16.png",
+        "48": "img/icon48.png",
+        "128": "img/icon128.png" 
+    },
+    "background": {
+        "persistent": false,
+        "scripts": [ "js/background.js" ]
+    },
+    "permissions": [
+        "<all_urls>",
+        "storage",
+        "contextMenus"
+    ],
+    "content_scripts": [
+        {
+            "js": [ "js/jquery-2.1.4.min.js", "js/favor_new.js" ],
+            "matches": [ "*://*.x.sankuai.com/*", "*://neixin.cn/*"],
+            "run_at": "document_end"
+        }
+    ],
+    "options_page": "options.html",
+    "web_accessible_resources": [
+        "img/favorite.png",
+        "options.html"
+    ]
+}
