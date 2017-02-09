@@ -14,16 +14,17 @@ function saveFavor(favorList) {
     chrome.storage.local.set({
         'favorList': favorList,
         'hasNew': true
-    }, function () {
+    }, ()=> {
 
     });
 }
 
 let myApp = angular.module('myApp', []);
 
-myApp.controller('OptionCtrl', ['$scope', function ($scope) {
+myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
+    $scope.emotions = '';
     $scope.favors = [];
-    chrome.storage.local.get('favorList', function (items) {
+    chrome.storage.local.get('favorList', (items)=> {
         $scope.$apply(function () {
             let favorList = items['favorList'];
             $scope.favors = favorList;
@@ -59,6 +60,8 @@ myApp.controller('OptionCtrl', ['$scope', function ($scope) {
                         result.push(value);
                     }
 
+                    $scope.favors = result;
+
                     saveFavor(result);
                     location.reload();
                 }
@@ -69,7 +72,21 @@ myApp.controller('OptionCtrl', ['$scope', function ($scope) {
     };
 
     $scope.exportEmotions = function () {
-        console.debug(JSON.stringify($scope.favors));
+        $scope.emotions = JSON.stringify($scope.favors);
+        setTimeout(()=> {
+            var input = document.querySelector('.emotion-text');
+            var range = document.createRange();
+            range.selectNode(input);
+            window.getSelection().addRange(range);
+
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copy email command was ' + msg);
+            } catch (err) {
+                console.log('Oops, unable to copy');
+            }
+        }, 0);
     };
 }]);
 
