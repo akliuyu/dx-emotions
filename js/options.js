@@ -24,6 +24,7 @@ let myApp = angular.module('myApp', []);
 myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
     $scope.emotions = '';
     $scope.favors = [];
+    $scope.info = '';
     chrome.storage.local.get('favorList', (items)=> {
         $scope.$apply(function () {
             let favorList = items['favorList'];
@@ -72,7 +73,16 @@ myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
     };
 
     $scope.exportEmotions = function () {
-        $scope.emotions = JSON.stringify($scope.favors);
+        var emotions = JSON.stringify($scope.favors);
+
+        if (!emotions || emotions.length === 0) {
+            $scope.info = '没有表情可以导出';
+            return;
+        }
+
+        $scope.emotions = emotions;
+        $scope.info = '已经复制到剪贴板中';
+
         setTimeout(()=> {
             var input = document.querySelector('.emotion-text');
             var range = document.createRange();
@@ -80,11 +90,10 @@ myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
             window.getSelection().addRange(range);
 
             try {
-                var successful = document.execCommand('copy');
-                var msg = successful ? 'successful' : 'unsuccessful';
-                console.log('Copy email command was ' + msg);
+                document.execCommand('copy');
+
             } catch (err) {
-                console.log('Oops, unable to copy');
+                $scope.info = '拷贝失败，请手动复制'
             }
         }, 0);
     };
