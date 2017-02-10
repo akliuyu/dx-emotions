@@ -46,9 +46,12 @@ myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
                 let favorList = items['favorList'];
                 let result = [];
                 const hashMap = new Map();
-                favorList.forEach((emotion)=> {
-                    hashMap.set(emotion, emotion);
-                });
+
+                if (favorList) {
+                    favorList.forEach((emotion)=> {
+                        hashMap.set(emotion, emotion);
+                    });
+                }
 
                 emotionsArr.forEach((emotion)=> {
                     if (!hashMap.has(emotion)) {
