@@ -45,27 +45,25 @@ myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
             chrome.storage.local.get('favorList', (items)=> {
                 let favorList = items['favorList'];
                 let result = [];
-                if (favorList) {
-                    const hashMap = new Map();
-                    favorList.forEach((emotion)=> {
+                const hashMap = new Map();
+                favorList.forEach((emotion)=> {
+                    hashMap.set(emotion, emotion);
+                });
+
+                emotionsArr.forEach((emotion)=> {
+                    if (!hashMap.has(emotion)) {
                         hashMap.set(emotion, emotion);
-                    });
-
-                    emotionsArr.forEach((emotion)=> {
-                        if (!hashMap.has(emotion)) {
-                            hashMap.set(emotion, emotion);
-                        }
-                    });
-
-                    for (let [key, value] of hashMap) {
-                        result.push(value);
                     }
+                });
 
-                    $scope.favors = result;
-
-                    saveFavor(result);
-                    location.reload();
+                for (let [key, value] of hashMap) {
+                    result.push(value);
                 }
+
+                $scope.favors = result;
+
+                saveFavor(result);
+                location.reload();
             });
         } catch (e) {
             alert('请输入正确的导入数据，或重新检查下~~');
