@@ -27,7 +27,8 @@
         "js/favor_new.js"
       ],
       "matches": [
-        "*://*.x.sankuai.com/*"
+        "*://*.x.sankuai.com/*",
+        "*://localhost:*/*"
       ],
       "run_at": "document_end"
     }

@@ -126,14 +126,18 @@ function openOptions() {
 // 发表
 function postFavor() {
     var src = event.target.getAttribute('src');
-    var message = window._debug.message;
-    var to = location.pathname.match(/\d+/)[0];
 
     if (mta) {
         mta('count', 'emotions.custom.dx');
     }
 
-    message.sendImageMessage(src, src, src, 'img/gif', 0, to);
+    if (window._debug) {
+        var message = window._debug.message;
+        var to = location.pathname.match(/\d+/)[0];
+        message.sendImageMessage(src, src, src, 'img/gif', 0, to);
+    } else {
+        window.postMessage({type: 'sendCustomEmotion', text: src}, '*');
+    }
 }
 
 function getCookie(name) {

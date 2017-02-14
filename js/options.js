@@ -26,6 +26,9 @@ myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
     $scope.favors = [];
     $scope.info = '';
     chrome.storage.local.get('favorList', (items)=> {
+        if (chrome.runtime.lastError) {
+            return;
+        }
         $scope.$apply(function () {
             let favorList = items['favorList'];
             $scope.favors = favorList;
