@@ -133,7 +133,7 @@ function postFavor() {
 
     if (window._debug) {
         var message = window._debug.message;
-        var to = location.pathname.match(/\d+/)[0];
+        var to = location.pathname.match(/[\d_]+/)[0];
         message.sendImageMessage(src, src, src, 'img/gif', 0, to);
     } else {
         window.postMessage({type: 'sendCustomEmotion', text: src}, '*');
