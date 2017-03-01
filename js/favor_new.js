@@ -1,7 +1,6 @@
 /**
  *
  */
-console.log('favor_new load');
 hack();
 var msgSend;
 function hack() {
@@ -29,14 +28,15 @@ function hackLeft() {
 }
 function doHack() {
     msgSend.find('.smiley-container .dxicon').unbind('click').bind('click', function () {
-        addTabbar();
+        addTabBar();
     });
 }
 
-function addTabbar() {
+function addTabBar() {
     setTimeout(function () {
         var tabbar = msgSend.find('.smiley-tabbar');
-        if (tabbar.length > 0) {
+        var isExist = tabbar.find('[title=收藏]').length > 0;
+        if (tabbar.length > 0 && !isExist) {
             tabbar.append($('<div>', {
                 'class': 'tabbar-item',
                 'title': '收藏',
@@ -62,9 +62,16 @@ function addTabbar() {
                 }
             });
         } else {
-            addTabbar();
+            addTabBar();
         }
     }, 200)
+}
+
+function removeTabBar() {
+    let tabBar = msgSend.find('.smiley-tabbar');
+    tabBar.remove('[title=收藏]');
+    let favorPanel = msgSend.find('.smiley-panel');
+    favorPanel.remove();
 }
 
 var tips = $('<label>', {
@@ -84,11 +91,10 @@ function showFavor() {
 }
 
 function hideFavor() {
-    msgSend.find('.wrapper-smiley').replaceWith("<span>");
+    removeTabBar();
 }
 
 function loadFavor(favorBox) {
-    console.log('load favor');
     chrome.storage.local.get(['favorList'], function (items) {
         var favorList = items['favorList'];
         if (favorList) {
