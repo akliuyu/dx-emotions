@@ -2,8 +2,8 @@
  * @module 表情插件管理模块
  */
 Array.prototype.remove = function (item) {
-    let index = this.indexOf(item);
-    let re = this[index];
+    var index = this.indexOf(item);
+    var re = this[index];
     if (index >= 0) {
         this.splice(index, 1);
     }
@@ -14,23 +14,23 @@ function saveFavor(favorList) {
     chrome.storage.local.set({
         'favorList': favorList,
         'hasNew': true
-    }, ()=> {
+    },function(){
 
     });
 }
 
-let myApp = angular.module('myApp', []);
+var myApp = angular.module('myApp', []);
 
-myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
+myApp.controller('OptionCtrl', ['$scope', function($scope) {
     $scope.emotions = '';
     $scope.favors = [];
     $scope.info = '';
-    chrome.storage.local.get('favorList', (items)=> {
+    chrome.storage.local.get('favorList', function(items) {
         if (chrome.runtime.lastError) {
             return;
         }
         $scope.$apply(function () {
-            let favorList = items['favorList'];
+            var favorList = items['favorList'];
             $scope.favors = favorList;
         });
     });
@@ -44,26 +44,26 @@ myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
 
     $scope.importEmotions = function (emotions) {
         try {
-            let emotionsArr = JSON.parse(emotions);
-            chrome.storage.local.get('favorList', (items)=> {
-                let favorList = items['favorList'];
-                let result = [];
-                const hashMap = new Map();
+            var emotionsArr = JSON.parse(emotions);
+            chrome.storage.local.get('favorList', function(items) {
+                var favorList = items['favorList'];
+                var result = [];
+                const hashMap = {};
 
                 if (favorList) {
-                    favorList.forEach((emotion)=> {
-                        hashMap.set(emotion, emotion);
+                    favorList.forEach(function(emotion) {
+                        hashMap[emotion] =emotion;
                     });
                 }
 
-                emotionsArr.forEach((emotion)=> {
-                    if (!hashMap.has(emotion)) {
-                        hashMap.set(emotion, emotion);
+                emotionsArr.forEach(function(emotion) {
+                    if (!hashMap[emotion]) {
+                        hashMap[emotion] =emotion;
                     }
                 });
 
-                for (let [key, value] of hashMap) {
-                    result.push(value);
+                for (var i in hashMap) {
+                    result.push(hashMap[i]);
                 }
 
                 $scope.favors = result;
@@ -87,7 +87,7 @@ myApp.controller('OptionCtrl', ['$scope', ($scope)=> {
         $scope.emotions = emotions;
         $scope.info = '已经复制到剪贴板中';
 
-        setTimeout(()=> {
+        setTimeout(function() {
             var input = document.querySelector('.emotion-text');
             var range = document.createRange();
             range.selectNode(input);

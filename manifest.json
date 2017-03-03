@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "大象表情收藏",
-  "description": "大象表情收藏",
-  "version": "4.2.0",
+  "description": "大象表情收藏（非官方）",
+  "version": "4.2.1",
   "default_locale": "zh_CN",
   "icons": {
     "16": "img/icon16.png",
@@ -27,7 +27,9 @@
         "js/favor_new.js"
       ],
       "matches": [
-        "*://*.x.sankuai.com/*"
+        "*://*.x.sankuai.com/*",
+        "*://*.*.x.sankuai.com/*",
+        "*://*.*.*.x.sankuai.com/*"
       ],
       "run_at": "document_end"
     }

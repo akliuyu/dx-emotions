@@ -1,5 +1,5 @@
 /**
- *
+ * @module: 画面板和表情主流程
  */
 hack();
 var msgSend;
@@ -68,9 +68,9 @@ function addTabBar() {
 }
 
 function removeTabBar() {
-    let tabBar = msgSend.find('.smiley-tabbar');
+    var tabBar = msgSend.find('.smiley-tabbar');
     tabBar.remove('[title=收藏]');
-    let favorPanel = msgSend.find('.smiley-panel');
+    var favorPanel = msgSend.find('.smiley-panel');
     favorPanel.remove();
 }
 
