@@ -70,8 +70,7 @@ function addTabBar() {
 function removeTabBar() {
     var tabBar = msgSend.find('.smiley-tabbar');
     tabBar.remove('[title=收藏]');
-    var favorPanel = msgSend.find('.smiley-panel');
-    favorPanel.remove();
+    $('#textTextarea').click();
 }
 
 var tips = $('<label>', {
@@ -137,13 +136,15 @@ function postFavor() {
         mta('count', 'emotions.custom.dx');
     }
 
-    if (window._debug) {
-        var message = window._debug.message;
-        var to = location.pathname.match(/[\d_]+/)[0];
-        message.sendImageMessage(src, src, src, 'img/gif', 0, to);
-    } else {
-        window.postMessage({type: 'sendCustomEmotion', text: src}, '*');
-    }
+    window.postMessage({type: 'sendCustomEmotion', text: src}, '*');
+
+    // if (window._debug) {
+    //     var message = window._debug.message;
+    //     var to = location.pathname.match(/[\d_]+/)[0];
+    //     message.sendImageMessage(src, src, src, 'img/gif', 0, to);
+    // } else {
+    //     window.postMessage({type: 'sendCustomEmotion', text: src}, '*');
+    // }
 }
 
 function getCookie(name) {
