@@ -1,8 +1,13 @@
 /**
  * @module: 画面板和表情主流程
  */
-hack();
+
 var msgSend;
+var favorList;
+var newFavorList;
+
+hack();
+
 function hack() {
     setTimeout(function () {
         msgSend = $('#msgSend');
@@ -14,6 +19,7 @@ function hack() {
         }
     }, 1000);
 }
+
 function hackLeft() {
     $($('#main .cust-app-item').get(0)).click(function () {
         setTimeout(function () {
@@ -93,26 +99,66 @@ function hideFavor() {
     removeTabBar();
 }
 
-function loadFavor(favorBox) {
-    chrome.storage.local.get(['favorList'], function (items) {
-        var favorList = items['favorList'];
-        if (favorList) {
-            showTips(favorList.length === 0);
-            favorBox.find('span').remove();
-            for (var i = 0; i < favorList.length; i++) {
-                favorBox.append($('<span>', {
-                    'href': '#',
-                    'class': 'icon icon-smiley-emotions',
-                    'style': 'width: 64px; height: 64px;'
-                }).append($('<img>', {
-                    'width': 64,
-                    'height': 64,
-                    'src': favorList[i],
-                    'onclick': 'postFavor()',
-                    'click': hideFavor
-                })));
-            }
+// 发表
+function postFavor() {
+    var src = event.target.getAttribute('src');
+
+    if (window.mta) {
+        mta('count', 'emotions.custom.dx');
+    }
+
+    window.postMessage({ type: 'sendCustomEmotion', text: src }, '*');
+
+    newFavorList = newFavorList.map(function (element) {
+        if (element.url === src) {
+            return {
+                url: src,
+                count: element.count + 1
+            };
         }
+
+        return element;
+    })
+
+    saveNewFavor(newFavorList);
+}
+
+function loadFavor(favorBox) {
+    chrome.storage.local.get(['favorList', 'newFavorList'], function (items) {
+        favorList = items['favorList'] || [];
+        newFavorList = items['newFavorList'];
+        
+        if (!newFavorList) {
+            newFavorList = favorList.map(function (element) {
+                return {
+                    url: element,
+                    count: 0
+                };
+            });
+
+            saveNewFavor(newFavorList);
+        }
+
+        showTips(newFavorList.length === 0);
+
+
+        newFavorList.sort(function (prev, next) {
+            return next.count - prev.count;
+        });
+
+        newFavorList.forEach(function (element) {
+            favorBox.append($('<span>', {
+                'href': '#',
+                'class': 'icon icon-smiley-emotions',
+                'style': 'width: 64px; height: 64px;',
+                'click': postFavor
+            }).append($('<img>', {
+                'width': 64,
+                'height': 64,
+                'src': element.url,
+                'click': hideFavor
+            })));
+        });
     });
 }
 
@@ -128,39 +174,10 @@ function openOptions() {
     window.open(chrome.extension.getURL('options.html'));
 }
 
-// 发表
-function postFavor() {
-    var src = event.target.getAttribute('src');
-
-    if (mta) {
-        mta('count', 'emotions.custom.dx');
-    }
-
-    window.postMessage({type: 'sendCustomEmotion', text: src}, '*');
-
-    // if (window._debug) {
-    //     var message = window._debug.message;
-    //     var to = location.pathname.match(/[\d_]+/)[0];
-    //     message.sendImageMessage(src, src, src, 'img/gif', 0, to);
-    // } else {
-    //     window.postMessage({type: 'sendCustomEmotion', text: src}, '*');
-    // }
+function saveNewFavor(newFavorList) {
+    chrome.storage.local.set({
+        'newFavorList': newFavorList,
+        'hasNew': true
+    });
 }
 
-function getCookie(name) {
-    var cookies = document.cookie;
-    var cookiesArr = cookies.split(';');
-    for (var i in cookiesArr) {
-        var cookie = cookiesArr[i];
-        var kv = cookie.split("=");
-        if (kv[0].trim() === name) {
-            return kv[1];
-        }
-    }
-}
-
-(function injectFunc() {
-    var e = document.createElement("script");
-    e.textContent = postFavor + '\n' + getCookie + "\n";
-    document.body.appendChild(e);
-})();
