@@ -2,19 +2,21 @@
  * module: 右键菜单监听
  */
 
-chrome.contextMenus.create({
-    'id': '1000',
-    'title': '添加到收藏',
-    'contexts': ['image']
+chrome.runtime.onInstalled.addListener(function () {
+    chrome.contextMenus.create({
+        'id': '1000',
+        'title': '添加到收藏',
+        'contexts': ['image']
+    });
 });
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
     var src = info['srcUrl'];
     chrome.storage.local.get(['favorList', 'newFavorList'], function (items) {
         var favorList = items['favorList'] || [];
-        var newFavorList = items['newFavorList'];
+        var newFavorList = items['newFavorList'] || [];
 
-        if (!newFavorList && favorList) {
+        if (newFavorList.length === 0 && favorList.length !== 0) {
             newFavorList = favorList.map(function (element) {
                 return {
                     url: element,
@@ -24,10 +26,10 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
             saveNewFavor(newFavorList);
         }
-        // if (newFavorList) {
+        
         var contains = false;
         for (var i = 0; i < newFavorList.length; i++) {
-            if (favorList[i].url === src) {
+            if (newFavorList[i].url === src) {
                 contains = true;
                 break;
             }
