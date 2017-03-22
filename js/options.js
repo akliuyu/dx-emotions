@@ -20,6 +20,16 @@ myApp.controller('OptionCtrl', ['$scope', function ($scope) {
         if (chrome.runtime.lastError) {
             return;
         }
+
+        if (!items['newFavorList'] && items['favorList']) {
+            saveFavor(items['favorList'].map(function (element) {
+                return {
+                    url: element,
+                    count: 0
+                };
+            }));
+        }
+
         $scope.$apply(function () {
             var favorList = items['favorList'];
             var newFavorList = items['newFavorList'];
