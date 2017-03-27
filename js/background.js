@@ -26,7 +26,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 
             saveNewFavor(newFavorList);
         }
-        
+
         var contains = false;
         for (var i = 0; i < newFavorList.length; i++) {
             if (newFavorList[i].url === src) {
@@ -40,6 +40,9 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
                 count: 0
             });
             saveNewFavor(newFavorList);
+            chrome.tabs.sendMessage(tab.id, {
+                refresh: true
+            });
         }
     });
 });

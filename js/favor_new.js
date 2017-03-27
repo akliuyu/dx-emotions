@@ -8,6 +8,12 @@ var newFavorList;
 
 hack();
 
+chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.refresh) {
+        showFavor();
+    }
+});
+
 function hack() {
     setTimeout(function () {
         msgSend = $('#msgSend');
@@ -127,7 +133,7 @@ function loadFavor(favorBox) {
     chrome.storage.local.get(['favorList', 'newFavorList'], function (items) {
         favorList = items['favorList'] || [];
         newFavorList = items['newFavorList'];
-        
+
         if (!newFavorList) {
             newFavorList = favorList.map(function (element) {
                 return {
@@ -180,4 +186,3 @@ function saveNewFavor(newFavorList) {
         'hasNew': true
     });
 }
-
